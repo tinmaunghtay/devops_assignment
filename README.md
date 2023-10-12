@@ -19,8 +19,6 @@ The folder section-1/templates/ includes templates for both frond-end and back-e
 $ aws cloudformation deploy --stack-name <stack-name> --template-file <template-file>
 ```
 
-$ aws cloudformation deploy <>
-
 #### Steps to run Section-1
 
 ##### Create Role with policy.json

@@ -94,7 +94,7 @@ Deploy applications using IIS or Apache or Tomcat or other opensource relevant s
 - SSL/TLS are properly deployed , encryption is verified 
 - Loggings and Audits are verified to be integrated with other channels such as ELK, Cloud Monitoring Tools
 - All softwares are updated, patches and its controls are done regualarly and scheduled
-- Verisions (if any) are verified to be installed as required. 
+- Check firewall and ports to confirm only necessary ports are open. 
 
 ### Section-3
 

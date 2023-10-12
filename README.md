@@ -29,7 +29,7 @@ Create a role using policy.json so that any IAM user (for example: DevOps Person
 
 Create Stack via AWS CloudFormation UI using templates/front-end/web-app-frontend-s3.yaml . Once completed, upload source/front-end/index.html to the bucket. You may use aws s3 cp command to upload (for example: With CodeDeploy or other tool). 
 
-From Browser where you have logged into AWS using your IAM account, request "https://<distributin-created>.cloudfront.net" to see whether index.html content is loaded. Distribution name can be found in cloudfront page.
+From Browser where you have logged into AWS using your IAM account, request "https://dxxxxxxxx.cloudfront.net" to see whether index.html content is loaded. Distribution name can be found in cloudfront page.
 
 ##### Backend
 There will be two stacks for backend: VPC and EC2 instance Stacks. 

@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploy SG and an EC2 instance at Private Subnet for backend application in Section 1
+Parameters:
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+  LatestAmiId:
+    Type:  'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  WorkstationIp:
+    Type: String
+    Description: The IP address of the workstation that can RDP into the instance.
+    Default: 116.89.124.113
+  KeyPairName:
+    Type: String
+    Description: The name of an existing Amazon EC2 key pair in this region to use to SSH into the Amazon EC2 instances. Note that Placeholder only and keypair will be created by cloudformation itself.
+    Default: 'section-1-kp'
+
+Resources:
+  NewKeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties: 
+      KeyName: section-1-kp
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "Internet Group"
+      GroupDescription: "SSH and web traffic in, all traffic out."
+      VpcId:
+        Fn::ImportValue:
+          VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIpv6: ::/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIpv6: ::/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp:  !Sub ${WorkstationIp}/32
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+  ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref Linux
+  Linux:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      SubnetId:
+        Fn::ImportValue:
+          PrivateSubnet1
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceTypeParameter
+      KeyName: !Ref NewKeyPair
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 50
+      Tags:
+        -
+          Key: Appplication
+          Value: Backend Server
+        -
+          Key: Domain
+          Value: None
+        -
+          Key: Environment
+          Value: Dev
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo "Hello World!"

@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploy S3 bucket and put a website on cloudfront.
+
+Resources:
+  S3BucketS1:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: "webapp-section-1"
+
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Description: "origin access control(OAC) for allowing cloudfront to access S3 bucket"
+        Name: section-1-hosting-OAC
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+  
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+      - S3BucketS1
+      - CloudFrontOriginAccessControl
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: "webapp-section-1.s3.ap-southeast-1.amazonaws.com"
+            Id: section-1-hosting
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
+        Enabled: "true"
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - DELETE
+            - GET
+            - HEAD
+            - OPTIONS
+            - PATCH
+            - POST
+            - PUT
+          Compress: true
+          TargetOriginId: section-1-hosting
+          ForwardedValues:
+            QueryString: "false"
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn:
+      - S3BucketS1
+    Properties:
+      Bucket: "webapp-section-1"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: "cloudfront.amazonaws.com"
+            Action: "s3:GetObject"
+            Resource: "arn:aws:s3:::webapp-section-1/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::661521969516:distribution/${CloudFrontDistribution}"
+
+Outputs:
+  S3BucketName:
+    Value: !Ref S3BucketS1
+
+  OriginAccessControl:
+    Value: !Ref CloudFrontOriginAccessControl
+  
+  CloudFrontDist:
+    Value: !Ref CloudFrontDistribution

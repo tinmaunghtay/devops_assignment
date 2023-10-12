@@ -1,9 +1,9 @@
-## devops assignment
+## Devops Assignment
 
 Welcome to devops assignment Github! This project will contain four sections: section-1, section-2, section-3, section-4. 
 
 
-### Section-1
+### Section-1 AWS Deployment
 
 This section represents section-1 diretory. 
 
@@ -55,7 +55,7 @@ Use the get-parameter command as follows to get the parameter for your key and s
 aws ssm get-parameter --name /ec2/keypair/key-05abb699beEXAMPLE --with-decryption --query Parameter.Value --output text > new-key-pair.pem
 ```
 
-### Section-2
+### Section 2: On-Prem Server Deployment
 
 #### Prerequisites
 - Configure a user
@@ -90,14 +90,14 @@ Deploy applications using IIS or Apache or Tomcat or other opensource relevant s
 ##### 4. Clean up
 - clean up resources which are used or stored in server after sucessful deployment 
 
-#### 4. Security & Updates
+#### 5. Security & Updates
 - SSL/TLS are properly deployed , encryption is verified 
 - Loggings and Audits are verified to be integrated with other channels such as ELK, Cloud Monitoring Tools
 - All softwares are updated, patches and its controls are done regualarly and scheduled
 - Check firewall and ports to confirm only necessary ports are open. 
 
-### Section-3
+### Section-3: CI/CD Techniques
 
-### Section-4
+### Section-4: Monitoring Techniques
 
 

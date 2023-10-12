@@ -57,6 +57,45 @@ aws ssm get-parameter --name /ec2/keypair/key-05abb699beEXAMPLE --with-decryptio
 
 ### Section-2
 
+#### Prerequisites
+- Configure a user
+- Install/Upgrade AWS CLI
+- Create a service role
+- What type of web-application ? Microsoft Based (ASP) or Opensource (Java/React/Angular) ? Then, we can decide which server (Operation System) we will require. If ASP or similar, use Microsoft Windows Server. Otherwise, use RedHat Enterprise or Ubuntu.
+- As said it is a simple web applocation, we shall choose relatively small capacity VM.
+
+
+#### Steps
+##### 1. Configure on-premises instance
+If we are using AWS CodeDeploy, we can register an on-premises instance by using an IAM role ARN. 
+For example:
+```
+register-on-premises-instance --instance-name <value> --other-necessary-arguments <value>
+```
+
+Or we may be using the existing on-premise tools such as Jenkins to execute CI/CD pipelines.
+
+##### 2. Create, Bundle and Deploy
+Deploy applications using IIS or Apache or Tomcat or other opensource relevant server. 
+- Check if it is a clean state VM or server.
+- Create directories as necessary
+- Check permission on VM or Server
+- Follow deployment procedure as given from development team(s)
+
+##### 3. Verify All deployments
+- Verify the deployment
+- Test the availabiltiy of critical end-points
+- Dry Run with users
+
+##### 4. Clean up
+- clean up resources which are used or stored in server after sucessful deployment 
+
+#### 4. Security & Updates
+- SSL/TLS are properly deployed , encryption is verified 
+- Loggings and Audits are verified to be integrated with other channels such as ELK, Cloud Monitoring Tools
+- All softwares are updated, patches and its controls are done regualarly and scheduled
+- Verisions (if any) are verified to be installed as required. 
+
 ### Section-3
 
 ### Section-4

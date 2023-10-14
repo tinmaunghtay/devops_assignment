@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-2-jenkins 
+  labels:
+    app: app-2
+spec:
+  selector:
+    matchLabels:
+        app: app-2
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: app-2
+    spec:
+      containers:
+        - name: app-2
+          image: [ECR-Repository-id].dkr.ecr.ap-southeast-1.amazonaws.com/app-2:latest
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          imagePullPolicy: Always

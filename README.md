@@ -1,6 +1,8 @@
-## Devops Assignment
+# Devops Assignment
 
-Welcome to devops assignment Github! This project will contain four sections: section-1, section-2, section-3, section-4. 
+## Overview
+
+This repository contains four sections: section-1, section-2, section-3, section-4. 
 
 
 ### Section-1 AWS Deployment
@@ -13,7 +15,7 @@ The directory, section-1/templates/, includes cloudformation templates for both 
 1. templates/front-end/web-app-frontend-s3.yaml will create a S3 bucket, a bucketpolicy and Cloudfront distirbution.
 2. templates/backend/web-app-backend-vpc.yaml will create vpc, route tables, public subnet (No Instance / Empty), private subnet (backend server instance). 
 3. tempaltes/backend/web-app-backend-sg.yaml will create security group, EC2 instance. For design to be used togehter with frond-end, I consider using Route 53 to point to Elastic IP so that frond-end codes can fetch data from backend server through Route 53 (via browser). For simplicity, I dont include Route 53 implementaiton. 
-4. A policy , back-end/policy.json, to create a IAM role so that DevOps person can assume to create both frond-end and backend stacks. Stacks can be created using via AWS Cloudformation UI or aws cli command as below.
+4. A policy , back-end/policy.json, is to create a IAM role so that DevOps person can assume to create both frond-end and backend stacks. Stacks can be created using via AWS Cloudformation UI or aws cli command as below.
 
 ```
 $ aws cloudformation deploy --stack-name <stack-name> --template-file <template-file>
@@ -99,7 +101,65 @@ Deploy applications using IIS or Apache or Tomcat or other opensource relevant s
 - Check firewall and ports to confirm only necessary ports are open. 
 
 ### Section-3: CI/CD Techniques
+This section is for deploying 3 microservices using Jenkins at Cloud based services (e.g., ECS Fargate or EC2) or on-premises server (e.g., Kubernetes or similar) or VMs.
+
+#### Microservices to Deploy
+Code base for each microservice below should be avaiable on Github as App-1, App-2, App-3 repositories. Please note that these repo names will be used respectively.
+
+1. Microservice A (own repo) --> Assumption - Client
+2. Microservice B (own repo) --> Assumption - API Service
+3. Microservice C (own repo) --> Assumption - A Database
+
+#### Prerequisites
+1. Install AWS CLI on the Jenkins Machine.
+2. Jenkins to have Git integrated and authenticated properly.
+3. Assumption: Code repositories of all 3 microservices are housed in GitHub. Webhooks for each repo shall be created so that Jenkins can know when repository is updated. 
+
+#### Steps to build, test and deploy microservices
+##### 1. Connect to Jenkins
+###### Create an access key
+Go to Amazon Console, then IAM, then Users, [your user], then Security credentials, and then Create Access Key. 
+
+###### Use Access key in Jenkins to authenticate to AWS
+Go to Manage Jenkins, then Manage Credentials, then Jenkins Store, then Global Credentials (unrestricted), and Add Credentials.
+Fill in the respective fields such as kind, id, access key id, secret access key. Click OK to save.
+
+
+##### 2. Create repos on AWS ECR using the Jenkins pipeline via GitHub
+Go to the Jenkins Dashboard, then New Item.
+
+Give your pipeline a name and select the Pipeline item, then OK.
+
+Webhooks are created for each repo in Github. for example: http://[jenkins-url]/github-webhook-app-1 
+
+Add jenkins pipelines files from section-3/pipelines/build-and-publish to the root level of repositories respectively. 
+
+Remember to replace [ECR-Repository-id] for each microservices. 
+
+##### 3. Clone, Build, Test and Push microservices
+
+Upload both .Jenkinfile and deployment yaml files from deploy-cluster directory into the root level of each repository.
+
+Setup Jenkins pipelines accordingly for each microservice.
+
+
+##### 3. Deploy to EKS Cluster for Each microservice
+
+If running manually, do the following: Otherwise, Jenkinsfile will take care of those.
+
+Run apply k8s command;
+kubectl apply -f deployment-cluster-app-1.yml
+kubectl apply -f deployment-cluster-app-2.yml
+kubectl apply -f deployment-cluster-app-3.yml
+
+Check commands:
+
+kubectl get all
+
+kubectl get pod — watch
+
+kubectl get service
 
 ### Section-4: Monitoring Techniques
 
-
+Default metrics such as requests can be used to display number of viewer requests coming to front-end website. If required, additional metrics such as Origin latency, error rates can be enabled to monitor total time spent when cloudfront receiving a request(s), number of error (for example: 401, 403, 502, etc).

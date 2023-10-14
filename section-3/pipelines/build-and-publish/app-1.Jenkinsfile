@@ -15,13 +15,13 @@ pipeline {
         stage('Build') { 
             steps { 
                 script{
-                 app = docker.build("app-3")
+                 app = docker.build("app-1")
                 }
             }
         }
         stage('Test'){
             steps {
-                 echo 'Testing microservice app 3'
+                 echo 'Testing microservice app 1'
             }
         }
         stage('Deploy') {

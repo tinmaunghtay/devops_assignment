@@ -162,4 +162,15 @@ kubectl get service
 
 ### Section-4: Monitoring Techniques
 
+
+#### Section 1
 Default metrics such as requests can be used to display number of viewer requests coming to front-end website. If required, additional metrics such as Origin latency, error rates can be enabled to monitor total time spent when cloudfront receiving a request(s), number of error (for example: 401, 403, 502, etc).
+
+#### Section 2
+We can have cloudwatch agent installed on on-premises server as mentioned in https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-premise.html. 
+
+Once installed and configured, metrics will be sent to cloudwatch by agents. 
+
+
+
+

@@ -11,16 +11,18 @@ This section represents section-1 diretory and its AWS Deployment for a web appl
 
 The directory, section-1/source/, includes files or sample files that are used to prove that task is completed. for example: source/frond-end/index.html to upload into the S3 bucket.
 
-The directory, section-1/templates/, includes cloudformation templates for both frond-end and back-end requirements: S3 with Cloudfront and EC2 with VPC & Security Group resepctively. Details are as follows:
+The directory, section-1/templates/, includes cloudformation templates for both frond-end and back-end requirements: S3 with Cloudfront and EC2 with VPC & Security Group resepctively. 
+
+Details are as follows:
 
 | S/N | File Name | Function(s) |
 | :-: | :------- | :--------- |
 | 1 | templates/front-end/web-app-frontend-s3.yaml | Create a S3 bucket, a bucketpolicy and Cloudfront distirbution. |
 | 2 | templates/backend/web-app-backend-vpc.yaml | Create vpc, route tables, public subnet (No Instance / Empty), private subnet (backend server instance). |
 | 3 | tempaltes/backend/web-app-backend-sg.yaml | Create security group, EC2 instance. For design to be used togehter with frond-end, I consider using Route 53 to point to Elastic IP so that frond-end codes can fetch data from backend server through Route 53 (via browser). For simplicity, I dont include Route 53 implementaiton.  |
-| 4 |back-end/policy.json | A policy to create a IAM role so that DevOps person can assume to create both frond-end and backend stacks. Stacks can be created using via AWS Cloudformation UI or aws cli command as below.|
+| 4 | source/back-end/policy.json | A policy to create a IAM role so that DevOps person can assume to create both frond-end and backend stacks. Stacks can be created using via AWS Cloudformation UI or aws cli command as below.|
 
-
+Command to deploy AWS Cloudformation Template(s):
 ```
 $ aws cloudformation deploy --stack-name <stack-name> --template-file <template-file>
 ```
@@ -29,7 +31,7 @@ $ aws cloudformation deploy --stack-name <stack-name> --template-file <template-
 
 ##### 1. Create Role with policy.json
 
-Create a role using policy.json so that any IAM user (for example: DevOps Personnel) can assume role to execute the stacks. It will help to limit the the permissions (Only necessary permissions should be given). If we are automating through a tool, for example, AWS CodeDeploy, we could use this role to assign to the service user. 
+By creating a role using policy.json , any IAM user (for example: DevOps Personnel) can assume role to execute the stacks. It will help to limit the the permissions (Only necessary permissions should be given). If we are automating through a tool, for example, AWS CodeDeploy, we could use this role to assign to the service user. 
 
 ##### 2. Create Front-end Stack
 
@@ -154,23 +156,35 @@ Setup Jenkins pipelines accordingly for each microservice.
 If running manually, do the following: Otherwise, Jenkinsfile will take care of those.
 
 Run apply k8s command;
+```
 kubectl apply -f deployment-cluster-app-1.yml
+
 kubectl apply -f deployment-cluster-app-2.yml
+
 kubectl apply -f deployment-cluster-app-3.yml
+```
+
 
 Check commands:
-
+```
 kubectl get all
 
 kubectl get pod — watch
 
 kubectl get service
+```
 
 ### Section-4: Monitoring Techniques
 
 
 #### Section 1
 Default metrics such as requests can be used to display number of viewer requests coming to front-end website. If required, additional metrics such as Origin latency, error rates can be enabled to monitor total time spent when cloudfront receiving a request(s), number of error (for example: 401, 403, 502, etc).
+
+Screenshot of Cloudwatch Dashboard showing metrics from Cloudfront:
+![Cloudwatch Dashboard Section-1](section-1/source/front-end/images/cloudwatch-dashboard-section1.jpg)
+
+Above screenshot showing 12 requests coming to cloudfront site of section-1 front-end. For simplicity and due to time constraints, dashboard only shows the available metrics.
+
 
 #### Section 2
 We can have cloudwatch agent installed on on-premises server as mentioned in https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-premise.html. 

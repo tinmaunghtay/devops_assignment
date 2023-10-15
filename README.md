@@ -37,9 +37,15 @@ By creating a role using policy.json , any IAM user (for example: DevOps Personn
 
 Create a front-end Stack via AWS CloudFormation UI using templates/front-end/web-app-frontend-s3.yaml . Once completed, upload source/front-end/index.html to the bucket. You may use aws s3 cp command to upload (for example: With CodeDeploy or other tool). 
 
+Screenshot of webapp for section-1 through cloudfront:
+![section-1-webapp](section-1/source/front-end/images/sample-webapp.jpg)
+
 From Browser where you have logged into AWS using your IAM account, request "https://dxxxxxxxx.cloudfront.net" to see whether index.html content is loaded. Exact Distribution name can be found in cloudfront page after stack is successfully executed.
 
 Please note that there is a single template for front-end for simplicity. We may think of separating to multiple templates such as one for security gateway, one for EC2 instance. By separating, we could re-use the templates for creating common stacks. 
+
+If domain or url is ready to use, we can transfer cloudwatch url to route53 domain url.
+
 
 ##### 3. Create Backend Stacks
 There will be two stacks for backend: VPC and EC2 instance Stacks. 
@@ -186,7 +192,6 @@ Screenshot of Cloudwatch Dashboard showing metrics from Cloudfront:
 Above screenshot showing 12 requests coming to cloudfront site of section-1 front-end. For simplicity and due to time constraints, dashboard only shows the available metrics.
 
 For alert notificaiton such as email for critical events, we can create a cloudwatch alarm together with SNS topic (which includes which email address to send). for details of setting up, please refer to https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ConsoleAlarms.html. 
-
 
 
 #### Section 2

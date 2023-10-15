@@ -12,10 +12,14 @@ This section represents section-1 diretory and its AWS Deployment for a web appl
 The directory, section-1/source/, includes files or sample files that are used to prove that task is completed. for example: source/frond-end/index.html to upload into the S3 bucket.
 
 The directory, section-1/templates/, includes cloudformation templates for both frond-end and back-end requirements: S3 with Cloudfront and EC2 with VPC & Security Group resepctively. Details are as follows:
-1. templates/front-end/web-app-frontend-s3.yaml will create a S3 bucket, a bucketpolicy and Cloudfront distirbution.
-2. templates/backend/web-app-backend-vpc.yaml will create vpc, route tables, public subnet (No Instance / Empty), private subnet (backend server instance). 
-3. tempaltes/backend/web-app-backend-sg.yaml will create security group, EC2 instance. For design to be used togehter with frond-end, I consider using Route 53 to point to Elastic IP so that frond-end codes can fetch data from backend server through Route 53 (via browser). For simplicity, I dont include Route 53 implementaiton. 
-4. A policy , back-end/policy.json, is to create a IAM role so that DevOps person can assume to create both frond-end and backend stacks. Stacks can be created using via AWS Cloudformation UI or aws cli command as below.
+
+| S/N | File Name | Function(s) |
+| :-: | :------- | :--------- |
+| 1 | templates/front-end/web-app-frontend-s3.yaml | Create a S3 bucket, a bucketpolicy and Cloudfront distirbution. |
+| 2 | templates/backend/web-app-backend-vpc.yaml | Create vpc, route tables, public subnet (No Instance / Empty), private subnet (backend server instance). |
+| 3 | tempaltes/backend/web-app-backend-sg.yaml | Create security group, EC2 instance. For design to be used togehter with frond-end, I consider using Route 53 to point to Elastic IP so that frond-end codes can fetch data from backend server through Route 53 (via browser). For simplicity, I dont include Route 53 implementaiton.  |
+| 4 |back-end/policy.json | A policy to create a IAM role so that DevOps person can assume to create both frond-end and backend stacks. Stacks can be created using via AWS Cloudformation UI or aws cli command as below.|
+
 
 ```
 $ aws cloudformation deploy --stack-name <stack-name> --template-file <template-file>
@@ -23,11 +27,11 @@ $ aws cloudformation deploy --stack-name <stack-name> --template-file <template-
 
 #### Steps to run Section-1
 
-##### Create Role with policy.json
+##### 1. Create Role with policy.json
 
 Create a role using policy.json so that any IAM user (for example: DevOps Personnel) can assume role to execute the stacks. It will help to limit the the permissions (Only necessary permissions should be given). If we are automating through a tool, for example, AWS CodeDeploy, we could use this role to assign to the service user. 
 
-##### Front-end
+##### 2. Create Front-end Stack
 
 Create a front-end Stack via AWS CloudFormation UI using templates/front-end/web-app-frontend-s3.yaml . Once completed, upload source/front-end/index.html to the bucket. You may use aws s3 cp command to upload (for example: With CodeDeploy or other tool). 
 
@@ -35,7 +39,7 @@ From Browser where you have logged into AWS using your IAM account, request "htt
 
 Please note that there is a single template for front-end for simplicity. We may think of separating to multiple templates such as one for security gateway, one for EC2 instance. By separating, we could re-use the templates for creating common stacks. 
 
-##### Backend
+##### 3. Create Backend Stacks
 There will be two stacks for backend: VPC and EC2 instance Stacks. 
 
 1. Create VPC Stack using templates/back-end/web-app-backend-vpc.yaml 
@@ -106,9 +110,11 @@ This section is for deploying 3 microservices using Jenkins at Cloud based servi
 #### Microservices to Deploy
 Code base for each microservice below should be avaiable on Github as App-1, App-2, App-3 repositories. Please note that these repo names will be used respectively.
 
-1. Microservice A (own repo) --> Assumption - Client
-2. Microservice B (own repo) --> Assumption - API Service
-3. Microservice C (own repo) --> Assumption - A Database
+| S/N | App Name | Repository | Assumption |
+| :---: | :--------: | :----------: | :-----------: |
+| 1   | Microservice A | Own Repo | API Client or UI Client |
+| 2   | Microservice B | Own Repo | API Service |
+| 3   | Microservice C | Own Repo | A Database (RDBMS or NoSQL) |
 
 #### Prerequisites
 1. Install AWS CLI on the Jenkins Machine.

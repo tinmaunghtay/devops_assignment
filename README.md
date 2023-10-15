@@ -9,9 +9,9 @@ This repository contains four sections: section-1, section-2, section-3, section
 
 This section represents section-1 diretory and its AWS Deployment for a web application . 
 
-The directory, section-1/source/, includes files or sample files that are used to prove that task is completed. for example: source/frond-end/index.html to upload into the S3 bucket.
+The directory, section-1/source/, contains files or sample files that are used to prove that task is completed. for example: source/frond-end/index.html to upload into the S3 bucket.
 
-The directory, section-1/templates/, includes cloudformation templates for both frond-end and back-end requirements: S3 with Cloudfront and EC2 with VPC & Security Group resepctively. 
+The directory, section-1/templates/, contains cloudformation templates for both frond-end and back-end requirements: S3 with Cloudfront and EC2 with VPC & Security Group resepctively. 
 
 Details are as follows:
 
@@ -184,6 +184,9 @@ Screenshot of Cloudwatch Dashboard showing metrics from Cloudfront:
 ![Cloudwatch Dashboard Section-1](section-1/source/front-end/images/cloudwatch-dashboard-section1.jpg)
 
 Above screenshot showing 12 requests coming to cloudfront site of section-1 front-end. For simplicity and due to time constraints, dashboard only shows the available metrics.
+
+For alert notificaiton such as email for critical events, we can create a cloudwatch alarm together with SNS topic (which includes which email address to send). for details of setting up, please refer to https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ConsoleAlarms.html. 
+
 
 
 #### Section 2
